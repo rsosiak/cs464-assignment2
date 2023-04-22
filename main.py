@@ -4,6 +4,7 @@ import requests
 import pandas as pd
 
 from prefect import flow, task
+from sqlalchemy import create_engine
 
 
 @task
@@ -33,19 +34,25 @@ def transform(df, *args, **kwargs):
 
 
 @task
-def load():
+def load(df, engine):
+    df.to_sql('tutorial', con=engine, if_exists='replace')
+
     return
 
 
 @flow
-def my_func():
+def my_flow():
     URL = (
         'https://raw.githubusercontent.com/mage-ai/datasets/master/' +
         'restaurant_user_transactions.csv'
     )
     data = extract(URL)
     data = transform(data)
-    return data.head()
+
+    engine = create_engine('sqlite://', echo=False)
+    load(data, engine)
+
+    return len(data.index)
 
 
-print(my_func())
+print(my_flow())
