@@ -68,7 +68,7 @@ def transform(df, *args, **kwargs):
 
 ## Loading the Data
 
-Explanation goes here...
+Explanation here...
 
 ```python
 @task
@@ -83,4 +83,39 @@ def load(df, engine, table_name):
         result = conn.execute(f"SELECT COUNT(*) FROM {table_name}").fetchone()
 
     return result[0]
+```
+
+## Building a Flow from the ETL Tasks
+
+Explanation here...
+
+```python
+@flow
+def my_flow():
+    URL = (
+        'https://raw.githubusercontent.com/mage-ai/datasets/master/' +
+        'restaurant_user_transactions.csv'
+    )
+    TABLE_NAME = 'tutorial'
+
+    data = extract(URL)
+
+    data = transform(data)
+
+    engine = create_engine('sqlite://', echo=False)
+
+    num_rows = load(data, engine, TABLE_NAME)
+
+    return len(data.index) == num_rows
+```
+
+
+```python
+def main():
+    print(my_flow())
+
+
+if __name__ == '__main__':
+    main()
+
 ```
