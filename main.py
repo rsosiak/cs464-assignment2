@@ -34,10 +34,13 @@ def transform(df, *args, **kwargs):
 
 
 @task
-def load(df, engine):
-    df.to_sql('tutorial', con=engine, if_exists='replace')
+def load(df, engine, table_name):
+    df.to_sql(table_name, con=engine, if_exists='replace')
 
-    return
+    with engine.connect() as conn:
+        result = conn.execute(f"SELECT COUNT(*) FROM {table_name}").fetchone()
+
+    return result[0]
 
 
 @flow
@@ -46,13 +49,19 @@ def my_flow():
         'https://raw.githubusercontent.com/mage-ai/datasets/master/' +
         'restaurant_user_transactions.csv'
     )
+    TABLE_NAME = 'tutorial'
     data = extract(URL)
     data = transform(data)
 
     engine = create_engine('sqlite://', echo=False)
-    load(data, engine)
+    num_rows = load(data, engine, TABLE_NAME)
 
-    return len(data.index)
+    return len(data.index) == num_rows
 
 
-print(my_flow())
+def main():
+    print(my_flow())
+
+
+if __name__ == '__main__':
+    main()
