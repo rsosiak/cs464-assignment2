@@ -23,7 +23,7 @@ from sqlalchemy import create_engine
 
 ## Extracting the Data
 
-Explanation here...
+First, we'll extract the data from a CSV file by making a GET request to an API. In this case, we are extracting data from a CSV file, but this code can be modified to extract a JSON object as well.
 
 ```python
 @task
