@@ -97,7 +97,9 @@ def load(df, engine, table_name):
 
 ## Building a Flow from the ETL Tasks
 
-Putting the tasks we created all together, we build our flow. You can see that the flow calls each task we built, extracting the data, transforming it, and loading it into our database. We perform some very simple validation, checking that the number of rows in our dataframe matches the number of rows inserted into our database.
+Putting the tasks we created all together, we build our flow. You can see that the flow calls each task we built, extracting the data, transforming it, and loading it into our database.
+
+We perform some very simple validation, checking that the number of rows in our dataframe matches the number of rows inserted into our database.
 
 ```python
 @flow
